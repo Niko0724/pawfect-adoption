@@ -1,0 +1,296 @@
+// =============================
+// PET ADOPTION SYSTEM (AUTH + TAG SEARCH + PROFILE)
+// Fully structured React project (LocalStorage version)
+// =============================
+
+
+// =============================
+// src/main.jsx
+// =============================
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './App.css'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+)
+
+
+// =============================
+// src/context/AuthContext.jsx
+// =============================
+import { createContext, useContext, useEffect, useState } from "react"
+
+const AuthContext = createContext()
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    const saved = localStorage.getItem("user")
+    if (saved) setUser(JSON.parse(saved))
+  }, [])
+
+  const signup = (email, password, name) => {
+    const newUser = { email, password, name, favorites: [] }
+    localStorage.setItem("user", JSON.stringify(newUser))
+    setUser(newUser)
+  }
+
+  const login = (email, password) => {
+    const saved = JSON.parse(localStorage.getItem("user"))
+    if (saved && saved.email === email && saved.password === password) {
+      setUser(saved)
+      return true
+    }
+    return false
+  }
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem("user")
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, signup, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export const useAuth = () => useContext(AuthContext)
+
+
+// =============================
+// src/data/pets.js
+// =============================
+export const petsData = [
+  { id: 1, name: "Luna", species: "Dog", breed: "Shiba Inu", shelter: "Hope Shelter", tags: ["Dog", "Small"] },
+  { id: 2, name: "Milo", species: "Cat", breed: "Persian", shelter: "Happy Paws", tags: ["Cat", "Fluffy"] },
+  { id: 3, name: "Kira", species: "Dog", breed: "Husky", shelter: "Hope Shelter", tags: ["Dog", "Large", "Snow"] },
+  { id: 4, name: "Rio", species: "Bird", breed: "Parrot", shelter: "Exotic Haven", tags: ["Exotic", "Bird"] }
+]
+
+
+// =============================
+// src/App.jsx
+// =============================
+import { useState } from "react"
+import { useAuth } from "./context/AuthContext"
+import PetList from "./pages/PetList"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import Profile from "./pages/Profile"
+
+export default function App() {
+  const { user } = useAuth()
+  const [page, setPage] = useState("home")
+
+  return (
+    <div className="container">
+      <nav>
+        <button onClick={() => setPage("home")}>Home</button>
+        <button onClick={() => setPage("login")}>Login</button>
+        <button onClick={() => setPage("signup")}>Signup</button>
+        <button onClick={() => setPage("profile")}>Profile</button>
+      </nav>
+
+      {page === "home" && <PetList />}
+      {page === "login" && <Login setPage={setPage} />}
+      {page === "signup" && <Signup setPage={setPage} />}
+      {page === "profile" && <Profile />}
+    </div>
+  )
+}
+
+
+// =============================
+// src/components/PetCard.jsx
+// =============================
+export default function PetCard({ pet }) {
+  return (
+    <div className="card">
+      <h3>{pet.name}</h3>
+      <p>{pet.species} - {pet.breed}</p>
+      <p><b>Shelter:</b> {pet.shelter}</p>
+
+      <div className="tags">
+        {pet.tags.map((t, i) => (
+          <span key={i} className="tag">{t}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+// =============================
+// src/pages/PetList.jsx
+// =============================
+import { useState } from "react"
+import { petsData } from "../data/pets"
+import PetCard from "../components/PetCard"
+
+export default function PetList() {
+  const [search, setSearch] = useState("")
+  const [filter, setFilter] = useState("All")
+
+  const filtered = petsData.filter((pet) => {
+    const matchSearch =
+      pet.name.toLowerCase().includes(search.toLowerCase()) ||
+      pet.species.toLowerCase().includes(search.toLowerCase()) ||
+      pet.breed.toLowerCase().includes(search.toLowerCase()) ||
+      pet.shelter.toLowerCase().includes(search.toLowerCase())
+
+    const matchFilter = filter === "All" || pet.tags.includes(filter)
+
+    return matchSearch && matchFilter
+  })
+
+  return (
+    <div>
+      <input
+        placeholder="Search by name, breed, shelter..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <div className="filter-bar">
+        {["All", "Dog", "Cat", "Exotic", "Large", "Small", "Fluffy"].map((tag) => (
+          <button key={tag} onClick={() => setFilter(tag)}>
+            {tag}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid">
+        {filtered.map((pet) => (
+          <PetCard key={pet.id} pet={pet} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+
+// =============================
+// src/pages/Login.jsx
+// =============================
+import { useState } from "react"
+import { useAuth } from "../context/AuthContext"
+
+export default function Login({ setPage }) {
+  const { login } = useAuth()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  const handleLogin = () => {
+    const ok = login(email, password)
+    if (ok) setPage("home")
+    else alert("Invalid credentials")
+  }
+
+  return (
+    <div>
+      <h2>Login</h2>
+      <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={handleLogin}>Login</button>
+    </div>
+  )
+}
+
+
+// =============================
+// src/pages/Signup.jsx
+// =============================
+import { useState } from "react"
+import { useAuth } from "../context/AuthContext"
+
+export default function Signup({ setPage }) {
+  const { signup } = useAuth()
+
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+
+  return (
+    <div>
+      <h2>Sign Up</h2>
+
+      <input placeholder="Name" onChange={(e) => setName(e.target.value)} />
+      <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+
+      <button onClick={() => { signup(email, password, name); setPage("home") }}>
+        Create Account
+      </button>
+    </div>
+  )
+}
+
+
+// =============================
+// src/pages/Profile.jsx
+// =============================
+import { useAuth } from "../context/AuthContext"
+
+export default function Profile() {
+  const { user, logout } = useAuth()
+
+  if (!user) return <p>Not logged in</p>
+
+  return (
+    <div>
+      <h2>Profile</h2>
+      <p>Name: {user.name}</p>
+      <p>Email: {user.email}</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  )
+}
+
+
+// =============================
+// src/App.css
+// =============================
+.container {
+  padding: 20px;
+  font-family: Arial;
+}
+
+nav button {
+  margin-right: 10px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #eee;
+  padding: 3px 6px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.filter-bar button {
+  margin: 5px;
+}
