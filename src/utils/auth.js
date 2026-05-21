@@ -61,8 +61,17 @@ export function loginUser(email, password) {
 
   if (!user) return { error: "Invalid credentials" }
 
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user))
-  return user
+  // 🧠 AUTO ROLE OVERRIDE RULE
+  const isAdmin = user.email.endsWith("@admin.com")
+
+  const updatedUser = {
+    ...user,
+    role: isAdmin ? "admin" : "user"
+  }
+
+  localStorage.setItem("pawfect_current_user", JSON.stringify(updatedUser))
+
+  return updatedUser
 }
 
 // =============================

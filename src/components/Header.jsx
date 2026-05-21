@@ -1,25 +1,44 @@
-export default function Header({ user, onLogout, search, setSearch }) {
-    return (
+import { useState } from "react"
+import UserDrawer from "./UserDrawer"
+
+export default function Header({
+  user,
+  onLogout,
+  search,
+  setSearch
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <>
       <div className="header">
+
         <div className="logo">🐾 Pawfect</div>
-  
+
         <div className="search-bar">
           <input
-            placeholder="Search name, breed, species, shelter..."
+            placeholder="Search pets..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-  
-        <div className="nav-actions">
-          <span style={{ marginRight: 10 }}>
-            {user?.name || user?.email}
-          </span>
-  
-          <button className="btn btn-primary" onClick={onLogout}>
-            Logout
-          </button>
+
+        {/* PROFILE BUTTON */}
+        <div
+          className="profile-button"
+          onClick={() => setOpen(true)}
+        >
+          👤 {user.name}
         </div>
       </div>
-    )
-  }
+
+      {/* SIDE DRAWER */}
+      <UserDrawer
+        open={open}
+        setOpen={setOpen}
+        user={user}
+        onLogout={onLogout}
+      />
+    </>
+  )
+}

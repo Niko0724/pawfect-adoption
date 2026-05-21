@@ -12,9 +12,7 @@ export function saveDB(db) {
 export function initDB() {
   const db = getDB()
 
-  if (!db.users) db.users = []
   if (!db.pets) db.pets = []
-  if (!db.shelters) db.shelters = []
   if (!db.adoptions) db.adoptions = []
 
   saveDB(db)

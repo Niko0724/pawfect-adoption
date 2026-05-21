@@ -24,8 +24,7 @@ export default function Home({ user, setUser }) {
     const matchesSearch =
       a.name.toLowerCase().includes(search.toLowerCase()) ||
       a.species.toLowerCase().includes(search.toLowerCase()) ||
-      a.breed.toLowerCase().includes(search.toLowerCase()) ||
-      a.shelter.toLowerCase().includes(search.toLowerCase())
+      a.breed.toLowerCase().includes(search.toLowerCase())
 
     return matchesFilter && matchesSearch
   })
