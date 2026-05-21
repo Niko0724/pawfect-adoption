@@ -19,11 +19,6 @@ export function createAdoptionRequest({ userId, petId, shelterId, message }) {
   return request
 }
 
-export function getShelterRequests(shelterId) {
-  const db = getDB()
-  return db.adoptions.filter(r => r.shelterId === shelterId)
-}
-
 export function updateRequestStatus(requestId, status) {
   const db = getDB()
 
@@ -32,4 +27,9 @@ export function updateRequestStatus(requestId, status) {
   )
 
   saveDB(db)
+}
+
+export function getAllRequests() {
+  const db = getDB()
+  return db.adoptions || []
 }

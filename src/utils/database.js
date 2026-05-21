@@ -1,19 +1,24 @@
 const DB_KEY = "pawfect_db"
 
 export function getDB() {
-  return JSON.parse(localStorage.getItem(DB_KEY) || "{}")
+  return JSON.parse(localStorage.getItem(DB_KEY) || "null")
 }
 
 export function saveDB(db) {
   localStorage.setItem(DB_KEY, JSON.stringify(db))
 }
 
-// init structure
 export function initDB() {
-  const db = getDB()
+  let db = getDB()
 
-  if (!db.pets) db.pets = []
-  if (!db.adoptions) db.adoptions = []
+  if (!db) {
+    db = {
+      users: [],
+      pets: [],
+      shelters: [],
+      adoptions: []
+    }
+  }
 
   saveDB(db)
   return db

@@ -1,38 +1,185 @@
 export const animalsData = [
-    {
-      id: 1,
-      name: "Luna",
-      species: "Cat",
-      breed: "Siamese",
-      age: "2 years",
-      story: "Found near a market, very affectionate and calm.",
-      injuries: "None",
-      shelterId: 1,
-      image: "https://placekitten.com/400/400",
-      tags: ["cat", "friendly"]
-    },
-    {
-      id: 2,
-      name: "Max",
-      species: "Dog",
-      breed: "Golden Retriever",
-      age: "3 years",
-      story: "Rescued from flooding, loves people.",
-      injuries: "Minor leg recovery (fully healed)",
-      shelterId: 2,
-      image: "https://placedog.net/400/400",
-      tags: ["dog", "family"]
-    },
-    {
-      id: 3,
-      name: "Kiwi",
-      species: "Bird",
-      breed: "Parrot",
-      age: "1 year",
-      story: "Hand-raised exotic bird, very talkative.",
-      injuries: "None",
-      shelterId: 3,
-      image: "https://via.placeholder.com/400",
-      tags: ["bird", "exotic"]
-    }
-  ]
+  {
+    id: 1,
+    name: "Luna",
+    species: "Cat",
+    breed: "Siamese",
+    age: "2 years",
+    story: "Found near a market, very affectionate and calm.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://images.unsplash.com/photo-1584102026323-27d7a9abd970?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwzfHxjdXRlJTIwZG9ncyUyMGNhdHMlMjBwZXRzfGVufDF8fHx8MTc3ODU4MjY2OHww&ixlib=rb-4.1.0&q=80&w=1080",
+    tags: ["friendly", "calm"]
+  },
+  {
+    id: 2,
+    name: "Max",
+    species: "Dog",
+    breed: "Golden Retriever",
+    age: "3 years",
+    story: "Rescued from flooding, loves people.",
+    injuries: "Minor leg recovery (fully healed)",
+    shelterId: 2,
+    image: "https://placedog.net/400/400",
+    tags: ["family-friendly", "social"]
+  },
+  {
+    id: 3,
+    name: "Kiwi",
+    species: "Bird",
+    breed: "Parrot",
+    age: "1 year",
+    story: "Hand-raised exotic bird, very talkative.",
+    injuries: "None",
+    shelterId: 3,
+    image: "https://i.imgur.com/lZwbRbp.jpeg",
+    tags: ["talkative", "social"]
+  },
+
+  {
+    id: 4,
+    name: "Milo",
+    species: "Cat",
+    breed: "Tabby",
+    age: "4 years",
+    story: "Found hiding in an abandoned house.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://placekitten.com/401/401",
+    tags: ["calm", "shy"]
+  },
+  {
+    id: 5,
+    name: "Bella",
+    species: "Dog",
+    breed: "Beagle",
+    age: "2 years",
+    story: "Owner surrendered due to relocation.",
+    injuries: "None",
+    shelterId: 2,
+    image: "https://placedog.net/401/401",
+    tags: ["playful", "energetic"]
+  },
+  {
+    id: 6,
+    name: "Sunny",
+    species: "Bird",
+    breed: "Canary",
+    age: "1 year",
+    story: "Rescued from a small cage, now thriving.",
+    injuries: "None",
+    shelterId: 3,
+    image: "https://via.placeholder.com/401",
+    tags: ["singing", "gentle"]
+  },
+  {
+    id: 7,
+    name: "Shadow",
+    species: "Cat",
+    breed: "Bombay",
+    age: "3 years",
+    story: "Found in a parking lot, very shy at first.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://placekitten.com/402/402",
+    tags: ["shy", "calm"]
+  },
+  {
+    id: 8,
+    name: "Rocky",
+    species: "Dog",
+    breed: "Bulldog",
+    age: "5 years",
+    story: "Surrendered after owner moved abroad.",
+    injuries: "Old healed skin irritation",
+    shelterId: 2,
+    image: "https://placedog.net/402/402",
+    tags: ["loyal", "calm"]
+  },
+  {
+    id: 9,
+    name: "Sky",
+    species: "Bird",
+    breed: "Cockatiel",
+    age: "2 years",
+    story: "Found injured wing, now fully recovered.",
+    injuries: "Healed wing injury",
+    shelterId: 3,
+    image: "https://via.placeholder.com/402",
+    tags: ["friendly", "gentle"]
+  },
+  {
+    id: 10,
+    name: "Coco",
+    species: "Rabbit",
+    breed: "Holland Lop",
+    age: "1 year",
+    story: "Abandoned near a park, very gentle.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://via.placeholder.com/403",
+    tags: ["gentle", "calm"]
+  },
+
+  {
+    id: 11,
+    name: "Buddy",
+    species: "Dog",
+    breed: "Labrador",
+    age: "4 years",
+    story: "Rescued from street wandering.",
+    injuries: "None",
+    shelterId: 2,
+    image: "https://placedog.net/403/403",
+    tags: ["friendly", "social"]
+  },
+  {
+    id: 12,
+    name: "Whiskers",
+    species: "Cat",
+    breed: "Persian",
+    age: "5 years",
+    story: "Owner could no longer care for him.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://placekitten.com/403/403",
+    tags: ["fluffy", "calm"]
+  },
+
+  {
+    id: 13,
+    name: "Pepper",
+    species: "Dog",
+    breed: "Pomeranian",
+    age: "2 years",
+    story: "Found wandering near highway.",
+    injuries: "Minor dehydration (treated)",
+    shelterId: 2,
+    image: "https://placedog.net/404/404",
+    tags: ["small", "energetic"]
+  },
+  {
+    id: 14,
+    name: "Ruby",
+    species: "Bird",
+    breed: "Lovebird",
+    age: "1 year",
+    story: "Rescued from neglect case.",
+    injuries: "None",
+    shelterId: 3,
+    image: "https://via.placeholder.com/404",
+    tags: ["social", "friendly"]
+  },
+  {
+    id: 15,
+    name: "Oreo",
+    species: "Cat",
+    breed: "Tuxedo",
+    age: "3 years",
+    story: "Found under a bridge during rainstorm.",
+    injuries: "None",
+    shelterId: 1,
+    image: "https://placekitten.com/404/404",
+    tags: ["curious", "friendly"]
+  }
+]

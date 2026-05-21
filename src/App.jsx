@@ -1,126 +1,84 @@
 import { useState, useEffect } from "react"
 import { Routes, Route } from "react-router-dom"
 
-// =============================
-// PAGES
-// =============================
-
 import Login from "./pages/Login"
 import Home from "./pages/Home"
 import PetProfile from "./pages/PetProfile"
 import ShelterProfile from "./pages/ShelterProfile"
+import ScrollToTopButton from "./components/ScrollToTopButton"
+import UserDrawer from "./components/UserDrawer"
+import Settings from "./pages/Settings"
 
-import Favorites from "./pages/Favorites"
-import MyRequests from "./pages/MyRequests"
-import AdminDashboard from "./pages/AdminDashboard"
-import AddPet from "./pages/AddPet"
-
-// =============================
-// AUTH
-// =============================
-
-import { getCurrentUser } from "./utils/auth"
+import { getCurrentUser, logoutUser } from "./utils/auth"
 
 export default function App() {
-
   const [user, setUser] = useState(null)
-
-  // =============================
-  // LOAD CURRENT USER
-  // =============================
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     setUser(getCurrentUser())
   }, [])
 
-  // =============================
-  // NOT LOGGED IN
-  // =============================
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("pawfect_theme") === "dark"
+  )
 
-  if (!user) {
-    return <Login onLogin={setUser} />
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark")
+      localStorage.setItem("pawfect_theme", "dark")
+    } else {
+      document.body.classList.remove("dark")
+      localStorage.setItem("pawfect_theme", "light")
+    }
+  }, [darkMode])
+
+  const handleLogout = () => {
+    logoutUser()
+    setUser(null)
   }
 
-  // =============================
-  // ROUTES
-  // =============================
+  if (!user) return <Login onLogin={setUser} />
 
   return (
-    <Routes>
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              user={user}
+              setUser={setUser}
+              onOpenDrawer={() => setDrawerOpen(true)}
+            />
+          }
+        />
 
-      {/* HOME */}
-      <Route
-        path="/"
-        element={
-          <Home
-            user={user}
-            setUser={setUser}
-          />
-        }
+        <Route path="/pet/:id" element={<PetProfile user={user} />} />
+        <Route path="/shelter/:id" element={<ShelterProfile user={user} />} />
+        
+        <Route
+          path="/settings"
+          element={
+            <Settings
+              user={user}
+              setUser={setUser}
+              darkMode={darkMode}
+              setDarkMode={setDarkMode}
+            />
+          }
+        />
+      </Routes>
+
+      {/* GLOBAL UI */}
+      <ScrollToTopButton />
+
+      <UserDrawer
+        open={drawerOpen}
+        setOpen={setDrawerOpen}
+        user={user}
+        onLogout={handleLogout}
       />
-
-      {/* PET PROFILE */}
-      <Route
-        path="/pet/:id"
-        element={
-          <PetProfile
-            user={user}
-          />
-        }
-      />
-
-      {/* SHELTER PROFILE */}
-      <Route
-        path="/shelter/:id"
-        element={
-          <ShelterProfile
-            user={user}
-            setUser={setUser}
-          />
-        }
-      />
-
-      {/* FAVORITES */}
-      <Route
-        path="/favorites"
-        element={
-          <Favorites
-            user={user}
-            setUser={setUser}
-          />
-        }
-      />
-
-      {/* MY REQUESTS */}
-      <Route
-        path="/requests"
-        element={
-          <MyRequests
-            user={user}
-          />
-        }
-      />
-
-      {/* ADMIN DASHBOARD */}
-      <Route
-        path="/admin"
-        element={
-          user.role === "admin"
-            ? <AdminDashboard />
-            : <div style={{ padding: 40 }}>
-                🚫 Access Denied (Admin Only)
-              </div>
-        }
-      />
-
-      {/* ADD PET */}
-      <Route
-        path="/add-pet"
-        element={
-          <AddPet />
-        }
-      />
-
-    </Routes>
+    </>
   )
 }

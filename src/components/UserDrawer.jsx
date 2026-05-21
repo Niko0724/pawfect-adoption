@@ -8,7 +8,16 @@ export default function UserDrawer({
 }) {
   const navigate = useNavigate()
 
-  const isAdmin = user?.email?.endsWith("@admin.com")
+  if (!user) return null
+
+  const isAdmin = user.role === "admin" || user.email?.endsWith("@admin.com")
+
+  const closeDrawer = () => setOpen(false)
+
+  const goTo = (path) => {
+    navigate(path)
+    closeDrawer()
+  }
 
   return (
     <>
@@ -16,90 +25,75 @@ export default function UserDrawer({
       {open && (
         <div
           className="drawer-backdrop"
-          onClick={() => setOpen(false)}
+          onClick={closeDrawer}
         />
       )}
 
+      {/* DRAWER */}
       <div className={`drawer ${open ? "open" : ""}`}>
 
-        {/* CLOSE BUTTON (ARROW) */}
+        {/* CLOSE BUTTON */}
         <button
-          onClick={() => setOpen(false)}
-          style={{
-            position: "absolute",
-            top: 15,
-            right: 15,
-            border: "none",
-            background: "transparent",
-            fontSize: 22,
-            cursor: "pointer",
-            transform: "rotate(180deg)"
-          }}
+          onClick={closeDrawer}
+          className="drawer-close-btn"
+          aria-label="Close drawer"
         >
           ➜
         </button>
 
         {/* HEADER */}
         <div className="drawer-header">
-          <h2>👤 {user.name}</h2>
-          <p style={{ fontSize: 12, opacity: 0.7 }}>
+          <h2>👤 {user.name || "User"}</h2>
+
+          <p className="drawer-email">
             {user.email}
           </p>
 
-          {/* ROLE BADGE */}
           <span
-            style={{
-              fontSize: 12,
-              padding: "4px 10px",
-              borderRadius: 20,
-              background: isAdmin ? "#b23a48" : "#ddd",
-              color: isAdmin ? "white" : "black",
-              display: "inline-block",
-              marginTop: 8
-            }}
+            className={`drawer-badge ${isAdmin ? "admin" : "user"}`}
           >
             {isAdmin ? "ADMIN" : "USER"}
           </span>
         </div>
 
-        {/* NAV LINKS */}
+        {/* LINKS */}
         <div className="drawer-links">
 
-          <button onClick={() => navigate("/favorites")}>
+          <button onClick={() => goTo("/favorites")}>
             ❤️ Favorites
           </button>
 
-          <button onClick={() => navigate("/requests")}>
+          <button onClick={() => goTo("/requests")}>
             🧾 My Requests
           </button>
 
-          <button onClick={() => navigate("/")}>
+          <button onClick={() => goTo("/")}>
             🏠 Home
           </button>
 
-          {/* ADMIN ONLY BUTTON */}
           {isAdmin && (
-            <button onClick={() => navigate("/admin")}>
+            <button onClick={() => goTo("/admin")}>
               🧠 Admin Panel
             </button>
           )}
 
           <hr />
 
-          <button onClick={() => navigate("/settings")}>
+          <button onClick={() => goTo("/settings")}>
             ⚙ Settings
           </button>
 
-          <button onClick={() => navigate("/help")}>
+          <button onClick={() => goTo("/help")}>
             ❓ Help
           </button>
 
           <hr />
 
           <button
+            className="logout-btn"
             onClick={() => {
               onLogout()
-              setOpen(false)
+              closeDrawer()
             }}
           >
             🚪 Logout

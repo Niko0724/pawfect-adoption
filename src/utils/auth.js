@@ -1,13 +1,5 @@
-// =============================
-// PAWFECT AUTH SYSTEM (SINGLE FILE)
-// =============================
-
 const USERS_KEY = "pawfect_users"
 const CURRENT_USER_KEY = "pawfect_current_user"
-
-// =============================
-// STORAGE HELPERS
-// =============================
 
 export function getUsers() {
   return JSON.parse(localStorage.getItem(USERS_KEY) || "[]")
@@ -17,29 +9,22 @@ export function saveUsers(users) {
   localStorage.setItem(USERS_KEY, JSON.stringify(users))
 }
 
-// =============================
-// REGISTER
-// =============================
-
 export function registerUser(user) {
   const users = getUsers()
 
-  const exists = users.find(u => u.email === user.email)
-  if (exists) return { error: "User already exists" }
+  if (users.find(u => u.email === user.email)) {
+    return { error: "User already exists" }
+  }
 
   const newUser = {
     id: Date.now(),
     name: user.name,
     email: user.email,
     password: user.password,
-
-    // role system (future admin/shelter support)
-    role: user.role || "user", // "user" | "shelter"
-
-    // user features
+    role: user.role || "user",
     favorites: [],
-    adopted: [],       // adoption request IDs
-    requests: []       // future shelter linking
+    adopted: [],
+    requests: []
   }
 
   users.push(newUser)
@@ -47,10 +32,6 @@ export function registerUser(user) {
 
   return newUser
 }
-
-// =============================
-// LOGIN
-// =============================
 
 export function loginUser(email, password) {
   const users = getUsers()
@@ -61,22 +42,9 @@ export function loginUser(email, password) {
 
   if (!user) return { error: "Invalid credentials" }
 
-  // 🧠 AUTO ROLE OVERRIDE RULE
-  const isAdmin = user.email.endsWith("@admin.com")
-
-  const updatedUser = {
-    ...user,
-    role: isAdmin ? "admin" : "user"
-  }
-
-  localStorage.setItem("pawfect_current_user", JSON.stringify(updatedUser))
-
-  return updatedUser
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user))
+  return user
 }
-
-// =============================
-// SESSION
-// =============================
 
 export function getCurrentUser() {
   return JSON.parse(localStorage.getItem(CURRENT_USER_KEY))
@@ -85,10 +53,6 @@ export function getCurrentUser() {
 export function logoutUser() {
   localStorage.removeItem(CURRENT_USER_KEY)
 }
-
-// =============================
-// UPDATE USER (SYNC SAFE)
-// =============================
 
 export function updateUser(updatedUser) {
   const users = getUsers()
@@ -103,55 +67,27 @@ export function updateUser(updatedUser) {
   return updatedUser
 }
 
-// =============================
-// FAVORITES SYSTEM
-// =============================
-
 export function toggleFavorite(user, petId) {
   const users = getUsers()
 
   const updatedUsers = users.map(u => {
     if (u.id !== user.id) return u
 
-    const favorites = u.favorites || []
-    const exists = favorites.includes(petId)
+    const fav = u.favorites || []
+    const exists = fav.includes(petId)
 
     return {
       ...u,
       favorites: exists
-        ? favorites.filter(id => id !== petId)
-        : [...favorites, petId]
+        ? fav.filter(id => id !== petId)
+        : [...fav, petId]
     }
   })
 
   saveUsers(updatedUsers)
 
-  const updatedUser = updatedUsers.find(u => u.id === user.id)
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser))
+  const updated = updatedUsers.find(u => u.id === user.id)
+  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updated))
 
-  return updatedUser
-}
-
-// =============================
-// ADOPTION TRACKING
-// =============================
-
-export function addUserAdoption(user, requestId) {
-  const users = getUsers()
-
-  const updatedUsers = users.map(u => {
-    if (u.id !== user.id) return u
-
-    return {
-      ...u,
-      adopted: [...(u.adopted || []), requestId]
-    }
-  })
-
-  saveUsers(updatedUsers)
-
-  const updatedUser = updatedUsers.find(u => u.id === user.id)
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(updatedUser))
-
-  return updatedUser
+  return updated
 }
