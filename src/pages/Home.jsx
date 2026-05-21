@@ -2,13 +2,15 @@ import { useState } from "react"
 import Header from "../components/Header"
 import Hero from "../components/Hero"
 import FilterBar from "../components/FilterBar"
-import AnimalCard from "../components/AnimalCard"
+import PetCard from "../components/PetCard"
+import AdoptionModal from "../components/AdoptionModal"
 import { animalsData } from "../data/animals"
 import { logoutUser } from "../utils/auth"
 
 export default function Home({ user, setUser }) {
   const [filter, setFilter] = useState("All")
   const [search, setSearch] = useState("")
+  const [selectedPet, setSelectedPet] = useState(null)
 
   const handleLogout = () => {
     logoutUser()
@@ -24,8 +26,7 @@ export default function Home({ user, setUser }) {
     const matchesSearch =
       a.name.toLowerCase().includes(search.toLowerCase()) ||
       a.species.toLowerCase().includes(search.toLowerCase()) ||
-      a.breed.toLowerCase().includes(search.toLowerCase()) ||
-      a.shelter.toLowerCase().includes(search.toLowerCase())
+      a.breed.toLowerCase().includes(search.toLowerCase())
 
     return matchesFilter && matchesSearch
   })
@@ -45,9 +46,23 @@ export default function Home({ user, setUser }) {
 
       <div className="grid">
         {filtered.map((a) => (
-          <AnimalCard key={a.id} animal={a} />
+          <PetCard
+            key={a.id}
+            pet={a}
+            user={user}
+            setUser={setUser}
+            onAdopt={setSelectedPet}
+          />
         ))}
       </div>
+
+      {selectedPet && (
+        <AdoptionModal
+          pet={selectedPet}
+          user={user}
+          onClose={() => setSelectedPet(null)}
+        />
+      )}
     </>
   )
 }

@@ -1,89 +1,97 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { animalsData } from "../data/animals"
-import { sheltersData } from "../data/shelters"
-import { createAdoptionRequest } from "../utils/adoption"
+import AdoptionModal from "../components/AdoptionModal"
 
 export default function PetProfile({ user }) {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const [message, setMessage] = useState("")
+  const [showModal, setShowModal] = useState(false)
 
-  const pet = animalsData.find(p => p.id === Number(id))
+  const pet = animalsData.find((p) => p.id === Number(id))
+
   if (!pet) return <div>Pet not found</div>
 
-  const shelter = sheltersData.find(s => s.id === pet.shelterId)
-
-  const handleAdopt = () => {
-    if (!message) return alert("Please write a short message")
-
-    createAdoptionRequest({
-      userId: user.id,
-      petId: pet.id,
-      shelterId: shelter.id,
-      message
-    })
-
-    alert("Adoption request sent successfully 🐾")
-
-    navigate(`/shelter/${shelter.id}`)
-  }
-
   return (
-    <div className="profile-page">
-      <div className="profile-card">
-        <img src={pet.image} alt={pet.name} />
+    <div className="pet-profile-page">
+      <button
+        className="back-btn"
+        onClick={() => navigate("/")}
+      >
+        ← Back to All Pets
+      </button>
 
-        <div>
+      <div className="pet-profile-card">
+        <img
+          src={pet.image}
+          alt={pet.name}
+          className="pet-profile-image"
+        />
+
+        <div className="pet-profile-info">
           <h1>{pet.name}</h1>
 
-          <p><b>Breed:</b> {pet.breed}</p>
-          <p><b>Species:</b> {pet.species}</p>
-          <p><b>Age:</b> {pet.age}</p>
+          <p className="pet-location">
+            {pet.location || "Unknown Location"}
+          </p>
 
-          <hr />
+          <p className="pet-description">
+            {pet.story || "Friendly and loving pet looking for a forever home."}
+          </p>
 
-          <p><b>Story:</b> {pet.story}</p>
-          <p><b>Injuries:</b> {pet.injuries}</p>
+          <div className="details-grid">
+            <div>
+              <h4>Breed</h4>
+              <p>{pet.breed}</p>
+            </div>
 
-          {/* 🧾 NEW: Adoption Message */}
-          <div style={{ marginTop: 20 }}>
-            <h3>Why do you want to adopt?</h3>
+            <div>
+              <h4>Age</h4>
+              <p>{pet.age}</p>
+            </div>
 
-            <textarea
-              placeholder="Write your message to the shelter..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              style={{
-                width: "100%",
-                height: 100,
-                padding: 10,
-                borderRadius: 10,
-                border: "1px solid #ddd"
-              }}
-            />
+            <div>
+              <h4>Species</h4>
+              <p>{pet.species}</p>
+            </div>
+
+            <div>
+              <h4>Color</h4>
+              <p>{pet.color || "Unknown"}</p>
+            </div>
           </div>
 
-          {/* 🧠 Adopt Button */}
-          <button
-            className="btn btn-primary"
-            onClick={handleAdopt}
-            style={{ marginTop: 15 }}
-          >
-            Send Adoption Request 🧾
-          </button>
+          <div className="traits-section">
+            <h3>Characteristics</h3>
 
-          {/* 🏠 Secondary action */}
+            <div className="tags">
+              <span className="tag-pill">Friendly</span>
+              <span className="tag-pill">Energetic</span>
+              <span className="tag-pill">Loyal</span>
+              <span className="tag-pill">Playful</span>
+            </div>
+          </div>
+
           <button
-            onClick={() => navigate(`/shelter/${shelter.id}`)}
-            style={{ marginTop: 10 }}
-            className="btn btn-outline"
+            className="adopt-main-btn"
+            onClick={() => setShowModal(true)}
           >
-            View Shelter Info
+            Adopt {pet.name}
           </button>
         </div>
       </div>
+
+      {showModal && (
+        <AdoptionModal
+          pet={pet}
+          onClose={() => setShowModal(false)}
+          onSubmit={() => {
+            alert(`Application submitted for ${pet.name}`)
+            setShowModal(false)
+          }}
+        />
+      )}
     </div>
   )
 }
