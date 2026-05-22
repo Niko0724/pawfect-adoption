@@ -17,6 +17,8 @@ export default function Home({ user, setUser, onOpenDrawer}) {
     setUser(null)
   }
 
+  const searchLower = search.toLowerCase().trim()
+
   const filtered = animalsData.filter(pet => {
     const matchesFilter =
       filter === "All" ||
@@ -24,8 +26,11 @@ export default function Home({ user, setUser, onOpenDrawer}) {
       pet.tags?.includes(filter.toLowerCase())
 
     const matchesSearch =
-      pet.name.toLowerCase().includes(search.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(search.toLowerCase())
+      !searchLower ||
+      pet.name.toLowerCase().includes(searchLower) ||
+      pet.breed.toLowerCase().includes(searchLower) ||
+      pet.species.toLowerCase().includes(searchLower) ||
+      pet.tags?.some(tag => tag.toLowerCase().includes(searchLower))
 
     return matchesFilter && matchesSearch
   })
@@ -63,6 +68,7 @@ export default function Home({ user, setUser, onOpenDrawer}) {
             alert("Application submitted!")
             setSelectedPet(null)
           }}
+          setUser={setUser}
         />
       )}
     </>

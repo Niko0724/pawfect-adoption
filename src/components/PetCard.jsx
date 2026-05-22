@@ -25,6 +25,15 @@ export default function PetCard({ pet, user, setUser, onAdopt }) {
         <h3>{pet.name}</h3>
         <p>{pet.breed}</p>
         <p>{pet.species}</p>
+        {pet.tags?.length > 0 && (
+          <div className="pet-tags">
+            {pet.tags.map(tag => (
+              <span key={tag} className="tag-pill">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         <button
           className="adopt-btn"

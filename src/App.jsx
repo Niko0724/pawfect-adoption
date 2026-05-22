@@ -3,6 +3,9 @@ import { Routes, Route } from "react-router-dom"
 
 import Login from "./pages/Login"
 import Home from "./pages/Home"
+import Favorites from "./pages/Favorites"
+import Requests from "./pages/Requests"
+import Help from "./pages/Help"
 import PetProfile from "./pages/PetProfile"
 import ShelterProfile from "./pages/ShelterProfile"
 import ScrollToTopButton from "./components/ScrollToTopButton"
@@ -56,7 +59,36 @@ export default function App() {
 
         <Route path="/pet/:id" element={<PetProfile user={user} />} />
         <Route path="/shelter/:id" element={<ShelterProfile user={user} />} />
-        
+        <Route
+          path="/favorites"
+          element={
+            <Favorites
+              user={user}
+              setUser={setUser}
+              onOpenDrawer={() => setDrawerOpen(true)}
+            />
+          }
+        />
+        <Route
+          path="/requests"
+          element={
+            <Requests
+              user={user}
+              setUser={setUser}
+              onOpenDrawer={() => setDrawerOpen(true)}
+            />
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <Help
+              user={user}
+              setUser={setUser}
+              onOpenDrawer={() => setDrawerOpen(true)}
+            />
+          }
+        />
         <Route
           path="/settings"
           element={

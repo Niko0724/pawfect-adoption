@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { createAdoptionRequest } from "../utils/adoption"
 import { getCurrentUser, updateUser } from "../utils/auth"
 
-export default function AdoptionModal({ pet, onClose, onSubmit }) {
+export default function AdoptionModal({ pet, onClose, onSubmit, setUser }) {
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -40,6 +40,7 @@ export default function AdoptionModal({ pet, onClose, onSubmit }) {
     }
 
     updateUser(updatedUser)
+    if (setUser) setUser(updatedUser)
     onSubmit(request)
   }
 

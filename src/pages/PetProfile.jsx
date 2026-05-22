@@ -1,6 +1,7 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { useState } from "react"
 import { animalsData } from "../data/animals"
+import { sheltersData } from "../data/shelters"
 import AdoptionModal from "../components/AdoptionModal"
 
 export default function PetProfile({ user }) {
@@ -10,8 +11,13 @@ export default function PetProfile({ user }) {
   const [showModal, setShowModal] = useState(false)
 
   const pet = animalsData.find((p) => p.id === Number(id))
+  const shelter = sheltersData.find((s) => s.id === pet?.shelterId)
 
   if (!pet) return <div>Pet not found</div>
+
+  const locationText = shelter
+    ? `${shelter.name} • ${shelter.address}`
+    : pet.location || "Unknown Location"
 
   return (
     <div className="pet-profile-page">
@@ -33,7 +39,13 @@ export default function PetProfile({ user }) {
           <h1>{pet.name}</h1>
 
           <p className="pet-location">
-            {pet.location || "Unknown Location"}
+            {shelter ? (
+              <Link to={`/shelter/${shelter.id}`} className="shelter-link">
+                {locationText}
+              </Link>
+            ) : (
+              locationText
+            )}
           </p>
 
           <p className="pet-description">
@@ -57,8 +69,8 @@ export default function PetProfile({ user }) {
             </div>
 
             <div>
-              <h4>Color</h4>
-              <p>{pet.color || "Unknown"}</p>
+              <h4>Gender</h4>
+              <p>{pet.gender || "Unknown"}</p>
             </div>
           </div>
 
